@@ -37,24 +37,37 @@ let reader = null;
 let controls = null;
 let busy = false;
 let lastNumber = "";
-  function playBeep() {
-  const audio = new AudioContext();
+function playBeep() {
+  const audio = window.audioContext;
+  if (!audio || audio.state !== "running") return;
+
   const oscillator = audio.createOscillator();
   const gain = audio.createGain();
 
-  oscillator.frequency.value = 1200;
-  gain.gain.value = 0.15;
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(1200, audio.currentTime);
+
+  gain.gain.setValueAtTime(0.15, audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audio.currentTime + 0.15
+  );
 
   oscillator.connect(gain);
   gain.connect(audio.destination);
 
   oscillator.start();
-  oscillator.stop(audio.currentTime + 0.12);
-
-  oscillator.onended = () => audio.close();
+  oscillator.stop(audio.currentTime + 0.15);
 }
 
 async function startCamera() {
+  if (!window.audioContext) {
+    window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if (window.audioContext.state === "suspended") {
+    await window.audioContext.resume();
+  }
   if (!keyInput.value.trim()) {
     msg.textContent = "인증키를 먼저 입력하세요.";
     return;
