@@ -37,6 +37,22 @@ let reader = null;
 let controls = null;
 let busy = false;
 let lastNumber = "";
+  function playBeep() {
+  const audio = new AudioContext();
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.frequency.value = 1200;
+  gain.gain.value = 0.15;
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.start();
+  oscillator.stop(audio.currentTime + 0.12);
+
+  oscillator.onended = () => audio.close();
+}
 
 async function startCamera() {
   if (!keyInput.value.trim()) {
@@ -69,8 +85,9 @@ async function startCamera() {
         if (number === lastNumber) return;
 
         busy = true;
-        lastNumber = number;
-        sendNumber(number);
+lastNumber = number;
+playBeep();
+sendNumber(number);
       }
     );
 
