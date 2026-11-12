@@ -29,6 +29,8 @@ input {padding:13px;width:90%;max-width:350px}
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyPxJNRQxI96zndyBuzY3xwU3QWLbBbA4QHAxaX5nelFYSTs842Ix58rXhmS2dyKPOL/exec";
 
+
+
 const video = document.getElementById("video");
 const msg = document.getElementById("msg");
 const keyInput = document.getElementById("apiKey");
@@ -113,22 +115,22 @@ sendNumber(number);
 async function sendNumber(number) {
   msg.textContent = "전송 요청 중: " + number;
 
-  try {
-    await fetch(API_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=UTF-8"
-      },
-      body: JSON.stringify({
-        action: "submit",
-        key: keyInput.value.trim(),
-        number: number
-      })
-    });
+await fetch(API_URL, {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "text/plain;charset=UTF-8"
+  },
+  body: JSON.stringify({
+    action: "submit",
+    key: keyInput.value.trim(),
+    number: number
+  })
+});
 
-    msg.textContent = "전송 요청 완료: " + number +
-      " (시트에서 등록 여부 확인)";
+msg.textContent = "전송 요청 완료: " + number +
+  " (시트에서 등록 여부 확인)";
+    
   } catch (e) {
     msg.textContent = "전송 오류: " + e.message;
   }
