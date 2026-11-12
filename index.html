@@ -115,22 +115,23 @@ sendNumber(number);
 async function sendNumber(number) {
   msg.textContent = "전송 요청 중: " + number;
 
-await fetch(API_URL, {
-  method: "POST",
-  mode: "no-cors",
-  headers: {
-    "Content-Type": "text/plain;charset=UTF-8"
-  },
-  body: JSON.stringify({
-    action: "submit",
-    key: keyInput.value.trim(),
-    number: number
-  })
-});
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8"
+      },
+      body: JSON.stringify({
+        action: "submit",
+        key: keyInput.value.trim(),
+        number: number
+      })
+    });
 
-msg.textContent = "전송 요청 완료: " + number +
-  " (시트에서 등록 여부 확인)";
-    
+    msg.textContent = "전송 요청 완료: " + number +
+      " (시트에서 등록 여부 확인)";
+
   } catch (e) {
     msg.textContent = "전송 오류: " + e.message;
   }
@@ -140,7 +141,6 @@ msg.textContent = "전송 요청 완료: " + number +
     msg.textContent = "다음 운송장을 스캔하세요.";
   }, 500);
 }
-
 function stopCamera() {
   if (controls) controls.stop();
 
