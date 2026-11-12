@@ -12,6 +12,42 @@ video {width:100%;max-width:500px;background:#222}
 button {padding:14px 22px;margin:8px;font-size:17px}
 input {padding:13px;width:90%;max-width:350px}
 #msg {margin:20px;font-size:17px}
+  .scanner-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #000;
+}
+
+.scanner-container video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.scan-guide {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 35%;
+  height: 30%;
+  border: 3px solid #00e676;
+  border-radius: 12px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #ff1744;
+  box-shadow: 0 0 8px #ff1744;
+}
 </style>
 </head>
 <body>
@@ -20,7 +56,12 @@ input {padding:13px;width:90%;max-width:350px}
 
 <input id="apiKey" type="password" placeholder="기존 API 인증키 입력">
 <br><br>
-<video id="video" playsinline muted></video>
+<div class="scanner-container">
+  <video id="video" playsinline muted></video>
+  <div class="scan-guide">
+    <div class="scan-line"></div>
+  </div>
+</div>
 <br>
 <button id="start">카메라 시작</button>
 <button id="stop">카메라 중지</button>
