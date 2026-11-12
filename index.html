@@ -63,6 +63,8 @@ function playBeep() {
 }
 
 async function startCamera() {
+  msg.textContent = "시작 버튼 작동 확인";
+  
   if (!window.audioContext) {
     window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
