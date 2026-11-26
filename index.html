@@ -12,7 +12,7 @@ video {width:100%;max-width:500px;background:#222}
 button {padding:14px 22px;margin:8px;font-size:17px}
 input {padding:13px;width:90%;max-width:350px}
 #msg {margin:20px;font-size:17px}
-  .scanner-container {
+.scanner-container {
   position: relative;
   width: 100%;
   max-width: 600px;
@@ -20,13 +20,11 @@ input {padding:13px;width:90%;max-width:350px}
   overflow: hidden;
   background: #000;
 }
-
 .scanner-container video {
   display: block;
   width: 100%;
   height: auto;
 }
-
 .scan-guide {
   position: absolute;
   left: 5%;
@@ -38,7 +36,6 @@ input {padding:13px;width:90%;max-width:350px}
   box-sizing: border-box;
   pointer-events: none;
 }
-
 .scan-line {
   position: absolute;
   left: 0;
@@ -70,8 +67,6 @@ input {padding:13px;width:90%;max-width:350px}
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyPxJNRQxI96zndyBuzY3xwU3QWLbBbA4QHAxaX5nelFYSTs842Ix58rXhmS2dyKPOL/exec";
 
-
-
 const video = document.getElementById("video");
 const msg = document.getElementById("msg");
 const keyInput = document.getElementById("apiKey");
@@ -80,6 +75,18 @@ let reader = null;
 let controls = null;
 let busy = false;
 let lastNumber = "";
+
+// 저장된 인증키 자동 불러오기
+try {
+  const savedKey = localStorage.getItem("barcodeScannerApiKey");
+  if (savedKey) {
+    keyInput.value = savedKey;
+    msg.textContent = "저장된 인증키를 불러왔습니다.";
+  }
+} catch (e) {
+  console.log("인증키 자동 불러오기 실패:", e);
+}
+
 function playBeep() {
   const audio = window.audioContext;
   if (!audio || audio.state !== "running") return;
@@ -105,7 +112,7 @@ function playBeep() {
 
 async function startCamera() {
   msg.textContent = "시작 버튼 작동 확인";
-  
+
   if (!window.audioContext) {
     window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -113,8 +120,20 @@ async function startCamera() {
   if (window.audioContext.state === "suspended") {
     await window.audioContext.resume();
   }
+
   if (!keyInput.value.trim()) {
     msg.textContent = "인증키를 먼저 입력하세요.";
+    return;
+  }
+
+  // 인증키 저장
+  try {
+    localStorage.setItem(
+      "barcodeScannerApiKey",
+      keyInput.value.trim()
+    );
+  } catch (e) {
+    msg.textContent = "인증키 저장 실패";
     return;
   }
 
@@ -143,9 +162,9 @@ async function startCamera() {
         if (number === lastNumber) return;
 
         busy = true;
-lastNumber = number;
-playBeep();
-sendNumber(number);
+        lastNumber = number;
+        playBeep();
+        sendNumber(number);
       }
     );
 
@@ -184,6 +203,7 @@ async function sendNumber(number) {
     msg.textContent = "다음 운송장을 스캔하세요.";
   }, 500);
 }
+
 function stopCamera() {
   if (controls) controls.stop();
 
